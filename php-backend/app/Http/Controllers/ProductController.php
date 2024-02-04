@@ -13,7 +13,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::latest()->filter(request(['company', 'search']))->paginate(6);
+        $products = Product::select('products.*', 'companies.name as company_name', 'companies.logo_url as company_logo_url')
+            ->join('companies', 'products.company_id', '=', 'companies.id')
+            ->latest()
+            ->filter(request(['company', 'search']))
+            ->paginate(6);
         return response()->json($products);
     }
 
@@ -48,7 +52,11 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return response()->json($product);
+        $dbProduct = Product::select('products.*', 'companies.name as company_name', 'companies.logo_url as company_logo_url')
+            ->join('companies', 'products.company_id', '=', 'companies.id')
+            ->where('products.id', '=', $product->id)
+            ->get();
+        return response()->json($dbProduct);
     }
 
     /**
