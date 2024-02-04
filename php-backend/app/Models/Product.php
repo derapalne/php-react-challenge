@@ -10,7 +10,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'logo_url', 'company_id', 'price', 'user_id'];
+    protected $fillable = ['title', 'description', 'image_url', 'company_id', 'price', 'user_id'];
 
     public function scopeFilter($query, array $filters)
     {

@@ -30,7 +30,7 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            $formFields['logo_url'] = $request->file('logo')->store('/logos', 'public');
+            $formFields['image_url'] = $request->file('image')->store('/images', 'public');
         }
 
         $formFields['user_id'] = auth()->id();
@@ -61,8 +61,8 @@ class ProductController extends Controller
         if ($request->description) $formFields['description'] = $request->description;
         if ($request->price) $formFields['price'] = $request->price;
         if ($request->company_id) $formFields['company_id'] = $request->company_id;
-        if ($request->hasFile('logo')) {
-            $formFields['logo_url'] = $request->file('logo')->store('/logos', 'public');
+        if ($request->hasFile('image')) {
+            $formFields['image_url'] = $request->file('image')->store('/images', 'public');
         }
 
         $product->update($formFields);
