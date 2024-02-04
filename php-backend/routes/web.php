@@ -21,3 +21,5 @@ Route::get('/', function () {
 
 Route::apiResource('products', ProductController::class)->only(['show', 'index']);
 Route::apiResource('products', CompanyController::class)->only(['show', 'index']);
+Route::middleware('auth:sanctum')->apiResource('products', ProductController::class)->except(['show', 'index']);
+Route::middleware('auth:sanctum')->apiResource('products', CompanyController::class)->except(['show', 'index']);
