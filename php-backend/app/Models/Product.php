@@ -15,8 +15,7 @@ class Product extends Model
     public function scopeFilter($query, array $filters)
     {
         if ($filters['category'] ?? false) {
-            $query->join('categories', 'products.company_id', '=', 'categories.id')
-                ->where('categories.name', 'like', "%{$filters['category']}%");
+            $query->where('categories.name', 'like', "%{$filters['category']}%");
         }
         if ($filters['search'] ?? false) {
             $query->where('title', 'like', "%{$filters['search']}%")
