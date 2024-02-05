@@ -17,7 +17,7 @@ class ProductController extends Controller
             ->join('companies', 'products.company_id', '=', 'companies.id')
             ->latest()
             ->filter(request(['company', 'search']))
-            ->paginate(6);
+            ->paginate(12);
         return response()->json($products);
     }
 
