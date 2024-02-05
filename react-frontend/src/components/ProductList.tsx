@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import ProductForList from "./ProductForList";
 import { Product } from "@/interfaces/Product";
 import Paginator from "./Paginator";
-import Category from "@/interfaces/Category";
+import { Category as ICategory } from "@/interfaces/Category";
+import Category from "./Category";
 
 const orderFilters = [
     { text: "Cheapest", filter: "price" },
@@ -33,7 +34,7 @@ const fetchCategories = async () => {
 export default function ProductList() {
     const [isLoading, setIsLoading] = useState(true);
     const [products, setProducts] = useState<Product[]>();
-    const [categories, setCategories] = useState<Category[]>();
+    const [categories, setCategories] = useState<ICategory[]>();
     const [selectedCategory, setSelectedCategory] = useState("");
     const [prevPageUrl, setPrevPageUrl] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -41,15 +42,18 @@ export default function ProductList() {
     const [nextPageUrl, setNextPageUrl] = useState("");
     const [orderBy, setOrderBy] = useState("");
 
+    function refreshProducts(fetchedProducts: any) {
+        setProducts(fetchedProducts.data);
+        setPrevPageUrl(fetchedProducts.prev_page_url);
+        setNextPageUrl(fetchedProducts.next_page_url);
+        setCurrentPage(fetchedProducts.current_page);
+        setLastPage(fetchedProducts.last_page);
+    }
+
     useEffect(() => {
         async function getProducts() {
             const fetchedProducts = await fetchProducts();
-            console.log(fetchedProducts);
-            setProducts(fetchedProducts.data);
-            setPrevPageUrl(fetchedProducts.prev_page_url);
-            setNextPageUrl(fetchedProducts.next_page_url);
-            setCurrentPage(fetchedProducts.current_page);
-            setLastPage(fetchedProducts.last_page);
+            refreshProducts(fetchedProducts);
             setIsLoading(false);
         }
         getProducts();
@@ -63,22 +67,14 @@ export default function ProductList() {
     async function fetchPrevPageProducts() {
         setIsLoading(true);
         const fetchedProducts = await fetchProducts(prevPageUrl + "&", orderBy);
-        setProducts(fetchedProducts.data);
-        setPrevPageUrl(fetchedProducts.prev_page_url);
-        setNextPageUrl(fetchedProducts.next_page_url);
-        setCurrentPage(fetchedProducts.current_page);
-        setLastPage(fetchedProducts.last_page);
+        refreshProducts(fetchedProducts);
         if (fetchedProducts) setIsLoading(false);
     }
 
     async function fetchNextPageProducts() {
         setIsLoading(true);
         const fetchedProducts = await fetchProducts(nextPageUrl + "&", orderBy);
-        setProducts(fetchedProducts.data);
-        setPrevPageUrl(fetchedProducts.prev_page_url);
-        setNextPageUrl(fetchedProducts.next_page_url);
-        setCurrentPage(fetchedProducts.current_page);
-        setLastPage(fetchedProducts.last_page);
+        refreshProducts(fetchedProducts);
         if (fetchedProducts) setIsLoading(false);
     }
 
@@ -86,12 +82,12 @@ export default function ProductList() {
         if (orderBy === order) setOrderBy("");
         else setOrderBy(order);
         setIsLoading(true);
-        const fetchedProducts = await fetchProducts(undefined, orderBy === order ? "" : order);
-        setProducts(fetchedProducts.data);
-        setPrevPageUrl(fetchedProducts.prev_page_url);
-        setNextPageUrl(fetchedProducts.next_page_url);
-        setCurrentPage(fetchedProducts.current_page);
-        setLastPage(fetchedProducts.last_page);
+        const fetchedProducts = await fetchProducts(
+            undefined,
+            orderBy === order ? "" : order,
+            selectedCategory
+        );
+        refreshProducts(fetchedProducts);
         if (fetchedProducts) setIsLoading(false);
     }
 
@@ -104,11 +100,7 @@ export default function ProductList() {
             orderBy,
             selectedCategory === category ? "" : category
         );
-        setProducts(fetchedProducts.data);
-        setPrevPageUrl(fetchedProducts.prev_page_url);
-        setNextPageUrl(fetchedProducts.next_page_url);
-        setCurrentPage(fetchedProducts.current_page);
-        setLastPage(fetchedProducts.last_page);
+        refreshProducts(fetchedProducts);
         if (fetchedProducts) setIsLoading(false);
     }
 
@@ -147,14 +139,13 @@ export default function ProductList() {
                 <span className="text-right">Filter by Category:</span>
                 <ul className="col-span-5 flex">
                     {categories?.map((c) => (
-                        <li
-                            className={`mx-2 px-1 ${
-                                selectedCategory === c.name ? "bg-slate-400" : "bg-slate-200"
-                            } rounded-md hover:bg-slate-300 cursor-pointer`}
-                            onClick={() => fetchProductsFilteredByCategory(c.name)}
-                        >
-                            {c.name}
-                        </li>
+                        <Category
+                            params={{
+                                category: c,
+                                selectedCategory: selectedCategory,
+                                onClickHandler: fetchProductsFilteredByCategory,
+                            }}
+                        />
                     ))}
                 </ul>
             </div>
