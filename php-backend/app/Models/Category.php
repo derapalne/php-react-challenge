@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Company extends Model
+class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'logo_url'];
+    protected $fillable = ['name'];
 
     public function products(): HasMany
     {

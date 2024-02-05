@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
@@ -13,10 +15,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::select('products.*', 'companies.name as company_name', 'companies.logo_url as company_logo_url')
-            ->join('companies', 'products.company_id', '=', 'companies.id')
+        $products = Product::select('products.*', 'categories.name as category_name')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
             ->latest()
-            ->filter(request(['company', 'search']))
+            ->filter(request(['category', 'search', 'order']))
             ->paginate(12);
         return response()->json($products);
     }
@@ -28,7 +30,7 @@ class ProductController extends Controller
     {
         $formFields = $request->validate([
             'title' => 'required',
-            'company_id' => 'required',
+            'category' => 'required',
             'description' => 'required',
             'price' => 'required',
         ]);
@@ -37,6 +39,11 @@ class ProductController extends Controller
             $formFields['image_url'] = $request->file('image')->store('/images', 'public');
         }
 
+        $category = DB::table('categories')->where('name', '=', $formFields['category'])->get();
+
+        if (!$category) $category = Category::create(['name' => $formFields['category']]);
+
+        $formFields['category_id'] = $category->id;
         $formFields['user_id'] = auth()->id();
 
         $product = Product::create($formFields);
@@ -52,8 +59,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $dbProduct = Product::select('products.*', 'companies.name as company_name', 'companies.logo_url as company_logo_url')
-            ->join('companies', 'products.company_id', '=', 'companies.id')
+        $dbProduct = Product::select('products.*', 'categories.name as category_name')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
             ->where('products.id', '=', $product->id)
             ->get();
         return response()->json($dbProduct);
@@ -68,7 +75,7 @@ class ProductController extends Controller
         if ($request->title) $formFields['title'] = $request->title;
         if ($request->description) $formFields['description'] = $request->description;
         if ($request->price) $formFields['price'] = $request->price;
-        if ($request->company_id) $formFields['company_id'] = $request->company_id;
+        if ($request->category_id) $formFields['category_id'] = $request->category_id;
         if ($request->hasFile('image')) {
             $formFields['image_url'] = $request->file('image')->store('/images', 'public');
         }

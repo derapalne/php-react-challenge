@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Company;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
 
@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'bsmart@example.com',
         ]);
 
-        Company::factory(4)->create();
+        Category::factory(4)->create();
 
         Product::factory(16)->create();
     }

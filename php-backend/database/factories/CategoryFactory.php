@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Company>
  */
-class CompanyFactory extends Factory
+class CategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,6 @@ class CompanyFactory extends Factory
     {
         return [
             'name' => fake()->word(),
-            'logo_url' => fake()->imageUrl(),
         ];
     }
 }
