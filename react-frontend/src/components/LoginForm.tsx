@@ -38,8 +38,7 @@ export default function LoginForm() {
         ev.preventDefault();
         const userData = await postFormData(email, password);
         if (userData.error) {
-            const text = userData.error[0];
-            return setWarningText(text);
+            return setWarningText("Invalid Credentials");
         }
         if (userData.success) {
             Cookies.set("user_data", JSON.stringify(userData.user));
