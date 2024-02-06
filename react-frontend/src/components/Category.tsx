@@ -7,7 +7,7 @@ export default function Category({
 }) {
     return (
         <li
-            className={`mx-2 px-1 ${
+            className={`m-2 mt-0 px-1 ${
                 params.selectedCategory === params.category.name ? "bg-slate-400" : "bg-slate-200"
             } rounded-md hover:bg-slate-300 cursor-pointer`}
             onClick={() => params.onClickHandler(params.category.name)}

@@ -59,7 +59,7 @@ export default function ProductList() {
         getProducts();
         async function getCategories() {
             const fetchedCategories = await fetchCategories();
-            setCategories(fetchedCategories.data);
+            setCategories(fetchedCategories);
         }
         getCategories();
     }, []);
@@ -125,6 +125,7 @@ export default function ProductList() {
                 <ul className="col-span-5 flex">
                     {orderFilters.map((f) => (
                         <li
+                            key={f.text}
                             className={`mx-2 px-1 ${
                                 orderBy === f.filter ? "bg-slate-400" : "bg-slate-200"
                             } rounded-md hover:bg-slate-300 cursor-pointer`}
@@ -137,9 +138,10 @@ export default function ProductList() {
             </div>
             <div className="grid grid-cols-6 w-full p-4 border-2 border-transparent border-b-slate-300">
                 <span className="text-right">Filter by Category:</span>
-                <ul className="col-span-5 flex">
+                <ul className="col-span-5 flex flex-wrap">
                     {categories?.map((c) => (
                         <Category
+                            key={c.id}
                             params={{
                                 category: c,
                                 selectedCategory: selectedCategory,
