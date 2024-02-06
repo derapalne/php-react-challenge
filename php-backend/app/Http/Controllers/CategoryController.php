@@ -12,7 +12,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $products = Category::latest()->paginate(6);
+        $products = Category::latest()->get();
         return response()->json($products);
     }
 
