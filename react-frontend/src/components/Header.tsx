@@ -32,6 +32,9 @@ export default function Header() {
                     <>
                         <li className="font-normal">Hello, {username}</li>
                         <li className="hover:underline">
+                            <Link href="add-product">Add Product</Link>
+                        </li>
+                        <li className="hover:underline">
                             <Link href="logout">Logout</Link>
                         </li>
                     </>
