@@ -9,7 +9,7 @@ const postFormData = async (
     password: string,
     confirmPassword: string
 ) => {
-    const response = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/auth/signup`, {
+    const response = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}api/auth/signup`, {
         method: "POST",
         body: JSON.stringify({
             name: username,

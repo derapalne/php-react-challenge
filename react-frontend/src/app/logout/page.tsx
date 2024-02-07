@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useEffect } from "react";
 
 const logout = async (accessToken: string) => {
-    const response = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/auth/logout`, {
+    const response = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/api/auth/logout`, {
         method: "post",
         headers: {
             Authorization: `Bearer ${accessToken}`,

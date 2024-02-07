@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
 const postFormData = async (email: string, password: string) => {
-    const response = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/auth/login`, {
+    const response = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}api/auth/login`, {
         method: "POST",
         body: JSON.stringify({
             email: email,

@@ -13,7 +13,7 @@ const orderFilters = [
 ];
 
 const fetchProducts = async (
-    url: string = `${process.env["NEXT_PUBLIC_BACKEND_URL"]}/products?`,
+    url: string = `${process.env["NEXT_PUBLIC_BACKEND_URL"]}api/products?`,
     orderBy?: string,
     category?: string
 ) => {
@@ -25,7 +25,7 @@ const fetchProducts = async (
 };
 
 const fetchCategories = async () => {
-    const cateogries = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/categories`);
+    const cateogries = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}api/categories`);
     const jsonCategories = await cateogries.json();
     console.log(jsonCategories);
     return jsonCategories;
