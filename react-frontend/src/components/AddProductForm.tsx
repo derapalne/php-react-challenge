@@ -108,11 +108,11 @@ export default function AddProductForm() {
     return (
         <form className="mt-4 p-8 border">
             <div className="grid grid-cols-4 py-2">
-                <label htmlFor="username">Title:</label>
+                <label htmlFor="title">Title:</label>
                 <input
                     className="ml-4 col-span-3 bg-slate-100 border border-transparent border-b-slate-300"
                     type="text"
-                    name="username"
+                    name="title"
                     placeholder="Product Title"
                     value={title}
                     onChange={handleTitleChange}
@@ -130,7 +130,7 @@ export default function AddProductForm() {
                 />
             </div>
             <div className="grid grid-cols-4 py-2">
-                <label htmlFor="password">Price</label>
+                <label htmlFor="price">Price</label>
                 <input
                     className="ml-4 col-span-3 bg-slate-100 border border-transparent border-b-slate-300"
                     type="number"
