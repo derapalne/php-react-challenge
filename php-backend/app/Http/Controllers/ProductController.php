@@ -19,8 +19,8 @@ class ProductController extends Controller
     {
         $products = Product::select('products.*', 'categories.name as category_name')
             ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->latest()
             ->filter(request(['category', 'search', 'order']))
+            ->latest()
             ->paginate(12);
         return response()->json($products);
     }

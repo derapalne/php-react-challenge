@@ -22,8 +22,8 @@ class Product extends Model
                 ->orWhere('description', 'like', "%{$filters['search']}%");
         }
         if ($filters['order'] ?? false) {
-            if (count(explode(' ', $filters['order'])) === 2) $query->orderBy(explode(' ', $filters['order'])[0], explode(' ', $filters['order'])[1]);
-            else $query->orderBy($filters['order']);
+            if (count(explode(' ', $filters['order'])) === 2) $query->orderBy(explode(' ', 'products.' . $filters['order'])[0], explode(' ', $filters['order'])[1]);
+            else $query->orderBy('products.' . $filters['order']);
         }
     }
 
