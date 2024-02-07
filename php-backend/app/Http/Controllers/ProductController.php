@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
@@ -28,30 +30,65 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $formFields = $request->validate([
-            'title' => 'required',
-            'category' => 'required',
-            'description' => 'required',
-            'price' => 'required',
-        ]);
+        try {
+            // Establish rules
+            $rules = [
+                'title' => 'required',
+                'category' => 'required',
+                'description' => 'required',
+                'price' => 'required',
+            ];
+            //Validate them
+            $validator = Validator::make($request->input(), $rules);
 
-        if ($request->hasFile('logo')) {
-            $formFields['image_url'] = $request->file('image')->store('/images', 'public');
+            // Verify
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => $validator->errors()->all(),
+                ], 400);
+            }
+
+            // Create formFields object
+            $formFields = [
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'price' => $request->input('price'),
+                'category' => $request->input('category'),
+            ];
+
+            // Verify image
+            if ($request->hasFile('image')) {
+                $formFields['image_url'] = $request->file('image')->store('/images', 'public');
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'error' => ['The image field is required'],
+                ], 400);
+            }
+
+            // Search for category and throw error if not exists
+            $category = DB::table('categories')->where('name', '=', $formFields['category'])->first();
+
+            if (!$category) return response()->json([
+                'success' => false,
+                'error' => ['Please enter a valid category'],
+            ], 400);
+
+            // Add category and user id
+            $formFields['category_id'] = $category->id;
+            $formFields['user_id'] = auth()->id();
+
+            // Create product
+            $product = Product::create($formFields);
+
+            return response()->json([
+                'success' => 'Product created successfully',
+                'product' => $product
+            ], 201);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
         }
-
-        $category = DB::table('categories')->where('name', '=', $formFields['category'])->get();
-
-        if (!$category) $category = Category::create(['name' => $formFields['category']]);
-
-        $formFields['category_id'] = $category->id;
-        $formFields['user_id'] = auth()->id();
-
-        $product = Product::create($formFields);
-
-        return response()->json([
-            'success' => 'Product created successfully',
-            'product' => $product
-        ]);
     }
 
     /**
