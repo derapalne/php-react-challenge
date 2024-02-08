@@ -52,10 +52,7 @@ const submitProduct = async (
     return jsonResponse;
 };
 
-const deleteProduct = async (
-    productId: number,
-    accessToken: string
-) => {
+const deleteProduct = async (productId: number, accessToken: string) => {
     const response = await fetch(
         `${process.env["NEXT_PUBLIC_BACKEND_URL"]}api/products/${productId}?_method=DELETE`,
         {
@@ -97,7 +94,6 @@ export default function EditProductForm() {
         getCategories();
         async function getProductData() {
             const productData: Product = await fetchProductData(id);
-            console.log(productData);
             setTitle(productData.title);
             setDescription(productData.description);
             setPrice(productData.price);
@@ -152,6 +148,25 @@ export default function EditProductForm() {
         }
         if (jsonResponse.success) {
             setButtonText("Product Updated!");
+            router.push("/");
+        }
+        if (jsonResponse.status === 500 || jsonResponse.status === 403 || jsonResponse.error) {
+            setWarningText(jsonResponse.message);
+        }
+        setWarningText("");
+    }
+
+    async function handleDeleteProductButtonClick(ev: React.FormEvent<HTMLButtonElement>) {
+        ev.preventDefault();
+        setButtonText("Deleting Product...");
+        const jsonResponse = await deleteProduct(id, accessToken);
+        if (jsonResponse.error) {
+            const text =
+                typeof jsonResponse.error === "string" ? jsonResponse.error : jsonResponse.error[0];
+            return setWarningText(text);
+        }
+        if (jsonResponse.success) {
+            setButtonText("Product Deleted!");
             router.push("/");
         }
         if (jsonResponse.status === 500 || jsonResponse.status === 403 || jsonResponse.error) {
@@ -243,7 +258,7 @@ export default function EditProductForm() {
             <div className="text-center mt-4">
                 <button
                     className="px-4 py-2 rounded-md hover:text-white bg-slate-100 border-2 border-red-600 hover:bg-slate-900"
-                    onClick={handleAddProductButtonClick}
+                    onClick={handleDeleteProductButtonClick}
                 >
                     !! Delete Product !!
                 </button>
