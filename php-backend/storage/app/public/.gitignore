@@ -1,2 +1,4 @@
-*
+*.*
 !.gitignore
+!default.png
+!image-not-found.png
