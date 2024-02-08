@@ -99,7 +99,7 @@ class ProductController extends Controller
         $dbProduct = Product::select('products.*', 'categories.name as category_name')
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->where('products.id', '=', $product->id)
-            ->get();
+            ->first();
         return response()->json($dbProduct);
     }
 
@@ -108,11 +108,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+
         $formFields = [];
-        if ($request->title) $formFields['title'] = $request->title;
-        if ($request->description) $formFields['description'] = $request->description;
-        if ($request->price) $formFields['price'] = $request->price;
-        if ($request->category_id) $formFields['category_id'] = $request->category_id;
+        if ($request->input('title')) $formFields['title'] = $request->title;
+        if ($request->input('description')) $formFields['description'] = $request->description;
+        if ($request->input('price')) $formFields['price'] = $request->price;
+        if ($request->input('category_id')) $formFields['category_id'] = $request->category_id;
         if ($request->hasFile('image')) {
             $formFields['image_url'] = $request->file('image')->store('/images', 'public');
         }

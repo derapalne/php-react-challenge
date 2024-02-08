@@ -5,6 +5,8 @@ import { Product } from "@/interfaces/Product";
 import Paginator from "./Paginator";
 import { Category as ICategory } from "@/interfaces/Category";
 import Category from "./Category";
+import Cookies from "js-cookie";
+import { UserData as IUserData } from "@/interfaces/UserData";
 
 const orderFilters = [
     { text: "Cheapest", filter: "price" },
@@ -27,7 +29,6 @@ const fetchProducts = async (
 const fetchCategories = async () => {
     const cateogries = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}api/categories`);
     const jsonCategories = await cateogries.json();
-    console.log(jsonCategories);
     return jsonCategories;
 };
 
@@ -41,6 +42,7 @@ export default function ProductList() {
     const [lastPage, setLastPage] = useState(1);
     const [nextPageUrl, setNextPageUrl] = useState("");
     const [orderBy, setOrderBy] = useState("");
+    const [userData, setUserData] = useState<IUserData>();
 
     function refreshProducts(fetchedProducts: any) {
         setProducts(fetchedProducts.data);
@@ -62,6 +64,8 @@ export default function ProductList() {
             setCategories(fetchedCategories);
         }
         getCategories();
+        const udCookie = Cookies.get("user_data");
+        if (udCookie) setUserData(JSON.parse(udCookie));
     }, []);
 
     async function fetchPrevPageProducts() {
@@ -153,7 +157,7 @@ export default function ProductList() {
             </div>
             <div className="grid grid-cols-4 gap-2 p-2 text-slate-950">
                 {products.map((p) => (
-                    <ProductForList key={p.id} params={p} />
+                    <ProductForList key={p.id} params={p} activeUserId={userData?.id} />
                 ))}
             </div>
             <div className="p-2 w-full">
