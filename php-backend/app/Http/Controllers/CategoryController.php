@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -21,16 +22,37 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $formFields = $request->validate([
-            'name' => 'required',
-        ]);
+        try {
+            // Establish rules
+            $rules = [
+                'name' => 'required',
+            ];
+            // Validate them
+            $validator = Validator::make($request->input(), $rules);
 
-        $category = Category::create($formFields);
+            // Verify
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => $validator->errors()->all(),
+                ], 400);
+            }
 
-        return response()->json([
-            'success' => 'Category created successfully',
-            'category' => $category
-        ]);
+            // Create formFields object
+            $formFields = [
+                'name' => $request->input('name'),
+            ];
+
+            // Create category
+            $category = Category::create($formFields);
+
+            return response()->json([
+                'success' => 'Category created successfully',
+                'category' => $category
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
     /**
