@@ -7,6 +7,7 @@ import { Category as ICategory } from "@/interfaces/Category";
 import Category from "./Category";
 import Cookies from "js-cookie";
 import { UserData as IUserData } from "@/interfaces/UserData";
+import CategoryEditor from "./CategoryEditor";
 
 const orderFilters = [
     { text: "Cheapest", filter: "price" },
@@ -153,6 +154,7 @@ export default function ProductList() {
                             }}
                         />
                     ))}
+                    {categories && userData && <CategoryEditor currentCategories={categories} />}
                 </ul>
             </div>
             <div className="grid grid-cols-4 gap-2 p-2 text-slate-950">

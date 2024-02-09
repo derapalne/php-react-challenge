@@ -42,7 +42,7 @@ const submitProduct = async (
         {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${accessToken.replace('"', "")}`,
+                Authorization: `Bearer ${accessToken.replaceAll('"', "")}`,
             },
             body: formData,
         }

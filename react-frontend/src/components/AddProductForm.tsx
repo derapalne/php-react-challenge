@@ -32,7 +32,7 @@ const submitProduct = async (
     const response = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}api/products`, {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${accessToken.replace('"', "")}`,
+            Authorization: `Bearer ${accessToken.replaceAll('"', "")}`,
         },
         body: formData,
     });
