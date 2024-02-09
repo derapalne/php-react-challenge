@@ -17,11 +17,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-Route::post('test', function () {
-    return 'Authenticated';
-})->middleware('auth:sanctum');
-
 Route::apiResource('products', ProductController::class)->only(['show', 'index']);
 Route::apiResource('categories', CategoryController::class)->only(['show', 'index']);
 Route::middleware('auth:sanctum')->apiResource('products', ProductController::class)->except(['show', 'index']);
