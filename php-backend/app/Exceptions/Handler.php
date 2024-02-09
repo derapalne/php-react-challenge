@@ -24,7 +24,10 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status' => 500
+            ], 500);
         });
         $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
             if ($request->is('api/*')) {

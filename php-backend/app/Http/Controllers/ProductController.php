@@ -17,12 +17,16 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::select('products.*', 'categories.name as category_name')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->filter(request(['category', 'search', 'order']))
-            ->latest()
-            ->paginate(12);
-        return response()->json($products);
+        try {
+            $products = Product::select('products.*', 'categories.name as category_name')
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->filter(request(['category', 'search', 'order']))
+                ->latest()
+                ->paginate(12);
+            return response()->json($products);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -96,11 +100,15 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $dbProduct = Product::select('products.*', 'categories.name as category_name')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->where('products.id', '=', $product->id)
-            ->first();
-        return response()->json($dbProduct);
+        try {
+            $dbProduct = Product::select('products.*', 'categories.name as category_name')
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->where('products.id', '=', $product->id)
+                ->first();
+            return response()->json($dbProduct);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -108,22 +116,25 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        try {
+            $formFields = [];
+            if ($request->input('title')) $formFields['title'] = $request->title;
+            if ($request->input('description')) $formFields['description'] = $request->description;
+            if ($request->input('price')) $formFields['price'] = $request->price;
+            if ($request->input('category_id')) $formFields['category_id'] = $request->category_id;
+            if ($request->hasFile('image')) {
+                $formFields['image_url'] = $request->file('image')->store('/images', 'public');
+            }
 
-        $formFields = [];
-        if ($request->input('title')) $formFields['title'] = $request->title;
-        if ($request->input('description')) $formFields['description'] = $request->description;
-        if ($request->input('price')) $formFields['price'] = $request->price;
-        if ($request->input('category_id')) $formFields['category_id'] = $request->category_id;
-        if ($request->hasFile('image')) {
-            $formFields['image_url'] = $request->file('image')->store('/images', 'public');
+            $product->update($formFields);
+
+            return response()->json([
+                'success' => 'Product updated successfully',
+                'product' => $product
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
         }
-
-        $product->update($formFields);
-
-        return response()->json([
-            'success' => 'Product updated successfully',
-            'product' => $product
-        ]);
     }
 
     /**
@@ -131,10 +142,14 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->delete();
-        return response()->json([
-            'success' => 'Product deleted Successfully',
-            'product' => $product
-        ]);
+        try {
+            $product->delete();
+            return response()->json([
+                'success' => 'Product deleted Successfully',
+                'product' => $product
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 }

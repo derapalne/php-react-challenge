@@ -13,8 +13,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $products = Category::latest()->get();
-        return response()->json($products);
+        try {
+            $products = Category::latest()->get();
+            return response()->json($products);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -60,7 +64,11 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return response()->json($category);
+        try {
+            return response()->json($category);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -68,16 +76,20 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $formFields = [];
-        if ($request->name) $formFields['name'] = $request->name;
+        try {
+            $formFields = [];
+            if ($request->name) $formFields['name'] = $request->name;
 
 
-        $category->update($formFields);
+            $category->update($formFields);
 
-        return response()->json([
-            'success' => 'Category updated successfully',
-            'category' => $category
-        ]);
+            return response()->json([
+                'success' => 'Category updated successfully',
+                'category' => $category
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -85,10 +97,14 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
-        return response()->json([
-            'success' => 'Category deleted Successfully',
-            'category' => $category
-        ]);
+        try {
+            $category->delete();
+            return response()->json([
+                'success' => 'Category deleted Successfully',
+                'category' => $category
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 }
