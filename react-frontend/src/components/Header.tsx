@@ -22,20 +22,20 @@ export default function Header() {
                 {username === "" ? (
                     <>
                         <li className="hover:underline">
-                            <Link href="sign-up">Sign Up</Link>
+                            <Link href="/sign-up">Sign Up</Link>
                         </li>
                         <li className="hover:underline">
-                            <Link href="login">Login</Link>
+                            <Link href="/login">Login</Link>
                         </li>
                     </>
                 ) : (
                     <>
                         <li className="font-normal">Hello, {username}</li>
                         <li className="hover:underline">
-                            <Link href="add-product">Add Product</Link>
+                            <Link href="/add-product">Add Product</Link>
                         </li>
                         <li className="hover:underline">
-                            <Link href="logout">Logout</Link>
+                            <Link href="/logout">Logout</Link>
                         </li>
                     </>
                 )}
