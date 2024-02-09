@@ -93,7 +93,7 @@ export default function EditableCategory({
             setShowMessage(false);
             setMessage("");
             setConfirmDelete(false);
-        }, 5000);
+        }, 3000);
     }
 
     if (deleted) return <></>;
