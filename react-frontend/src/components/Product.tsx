@@ -24,7 +24,7 @@ export default function Product() {
             setProduct(productData);
         }
         getProductData();
-    }, []);
+    }, [id]);
 
     if (!product) return <div>No Product found!</div>;
 

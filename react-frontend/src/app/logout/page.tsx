@@ -23,5 +23,5 @@ export default function Logout() {
         Cookies.remove("access_token");
         Cookies.remove("user_data");
         router.push("/");
-    }, []);
+    }, [router]);
 }

@@ -100,7 +100,7 @@ export default function EditProductForm() {
             setCategoryName(productData.category_name);
         }
         getProductData();
-    }, []);
+    }, [id]);
 
     const [warningText, setWarningText] = useState("");
 

@@ -33,7 +33,7 @@ export default function CategoryAdder({
             const atCookie = Cookies.get("access_token");
             if (atCookie) setAccessToken(atCookie);
         }
-    }, []);
+    }, [accessToken]);
 
     function handleNameChange(ev: React.FormEvent<HTMLInputElement>) {
         setName(ev.currentTarget.value);
